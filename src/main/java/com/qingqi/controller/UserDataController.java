@@ -12,7 +12,7 @@ import java.util.List;
 
 /**
  * Created by Administrator on 2017/10/13 0013.
- * 这个控制器用于处理关于EI表的数据请求（增删改查）
+ * 这个控制器用于处理关于User表的数据请求（增删改查）
  */
 @RestController
 @RequestMapping("/user")    //这里主要是为了与管理员账户分开，所以不用"/"
@@ -28,10 +28,10 @@ public class UserDataController {
      * 返回1表示这次是首次注册成功，返回0表示首次注册失败
      */
     @RequestMapping(value="/register")
-    public String register(@RequestParam(value = "tel",required = false, defaultValue = "00000000000") String tel,
-                            @RequestParam(value = "password", required = false, defaultValue = "00000000000") String password){
+    public String register(@RequestParam(value = "tel",required = false, defaultValue = "0") String tel,
+                            @RequestParam(value = "password", required = false, defaultValue = "0") String password){
 
-        if (tel.equals("00000000000") || tel.equals("00000000000"))
+        if (tel.equals("0") || tel.equals("0"))
             return "0";
         List<User> userList = new ArrayList<>();
         userList = userRepository.findAllByTel(tel);
@@ -43,6 +43,50 @@ public class UserDataController {
         }
         return "0";
     }
+
+    /**
+     * 这个方法主要是登录检查使用
+     * 返回1表示这次是登录成功，返回0表示登录失败
+     * http://localhost:8080/user/login?tel=18838951998&password=zhang
+     */
+    @RequestMapping(value="/login")
+    public String login(@RequestParam(value = "tel",required = false, defaultValue = "0") String tel,
+                           @RequestParam(value = "password", required = false, defaultValue = "0") String password){
+
+        if (tel.equals("0") || tel.equals("0"))
+            return "0";
+        List<User> userList = new ArrayList<>();
+        userList = userRepository.findAllByTelAndPassword(tel, password);
+        if (userList.size() == 0){
+            return "1";
+        }
+        return "0";
+    }
+
+
+    /**
+     * 下面这个接口用来修改密码，这个接口在本地的请求格式是：
+     * http://localhost:8080/user/changepassword?tel=18838951998&password=zhang&newpassword=123
+     * 成功则返回1，否则返回0
+     */
+    @RequestMapping("/changepassword")
+    public String changePassword(@RequestParam(value = "tel", required = false, defaultValue = "00000000000") String tel,
+                                  @RequestParam(value = "password", required = false, defaultValue = "0000")String password,
+                                  @RequestParam(value = "newpassword", required = false, defaultValue = "0000")String newpassword) {
+        if (tel.equals("00000000000") || password.equals("0000") || newpassword.equals("0000"))
+            return "0";
+        List<User> userList = new ArrayList<>();
+        userList = userRepository.findAllByTelAndPassword(tel, password);
+        if (userList.size() > 0){
+            User user = userList.get(0);
+            int flag = userRepository.updateUser(user.getTel(),newpassword);
+            if (flag == 0)
+                return "0";
+            return "1";
+        }
+        return "0";
+    }
+
 
 
 }

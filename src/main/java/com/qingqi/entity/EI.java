@@ -17,8 +17,9 @@ public class EI {
     private String tel;         //用户的电话号码
     private String sms;         //用户收到快递公司的短信信息
     private String address;     //用户自己的收货地址
-    private Long state;          //这条物流的状态：0表示轻骑未接单，1表示轻骑接单且在中午送货，2表示轻骑接单且在下午送货
+    private Long state;          //这条物流的状态：0表示轻骑看到通知，1表示轻骑已经取到货，2表示轻骑没有取到货
     private Long userid;       //用户的唯一标识,外接主键
+    private Long smsaddress;    //快递的位置：
 
     public EI() {
     }
@@ -30,6 +31,16 @@ public class EI {
         this.address = address;
         this.state = state;
         this.userid = userid;
+    }
+
+    public EI(String awb, String tel, String sms, String address, Long state, Long userid, Long smsaddress) {
+        this.awb = awb;
+        this.tel = tel;
+        this.sms = sms;
+        this.address = address;
+        this.state = state;
+        this.userid = userid;
+        this.smsaddress = smsaddress;
     }
 
     public Long getId() {
